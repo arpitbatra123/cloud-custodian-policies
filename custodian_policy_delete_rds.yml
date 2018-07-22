@@ -1,0 +1,16 @@
+policies:
+  - name: rds-training-cleanup
+    resource: rds
+    mode:
+      type: periodic
+      schedule: "cron(59 23 ? * SAT *)"
+      role: arn:aws:iam::651500399455:role/custodianCleanupRole 
+    filters:
+      - tag:c7n_keep : absent 
+      - type: value
+        value_type: age
+        key: InstanceCreateTime
+        value: 7
+        op: gt
+    actions:
+      - delete

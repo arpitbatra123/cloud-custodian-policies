@@ -1,0 +1,15 @@
+policies:
+  - name: ec2-training-cleanup
+    resource: ec2
+    mode:
+      type: periodic
+      schedule: "cron(59 23 ? * SAT *)" 
+      role: arn:aws:iam::651500399455:role/custodianCleanupRole
+      timeout: 300
+    filters:
+        - tag:c7n_keep : absent
+        - type: instance-age
+          op: gt
+          days: 7 
+    actions:
+      - terminate
